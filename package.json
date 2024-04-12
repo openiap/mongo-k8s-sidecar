@@ -1,0 +1,40 @@
+{
+  "name": "@openiap/mongo-k8s-sidecar",
+  "version": "0.2.4",
+  "description": "Kubernetes sidecar for mongodb",
+  "main": "src/index.js",
+  "scripts": {
+    "start": "env FOREVER_ROOT=/tmp forever src/index.js",
+    "watch": "env FOREVER_ROOT=/tmp forever -w src/index.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/open-rpa/mongo-k8s-sidecar.git"
+  },
+  "publishConfig": {
+    "access": "public"
+  },
+  "keywords": [
+    "kubernetes",
+    "k8s",
+    "mongo",
+    "mongodb",
+    "sidecar",
+    "docker",
+    "replica",
+    "replicaset"
+  ],
+  "author": "OpenIAP ApS / Allan Zimmermann",
+  "license": "MPL-2.0",
+  "bugs": {
+    "url": "https://community.openiap.io/"
+  },
+  "homepage": "https://github.com/open-rpa/mongo-k8s-sidecar",
+  "funding": "https://github.com/sponsors/skadefro",
+  "dependencies": {
+    "@kubernetes/client-node": "^0.17.1",
+    "forever": "^1.0.0",
+    "mongodb": "^4.12.1",
+    "node-forge": "^1.3.1"
+  }
+}

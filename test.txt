@@ -1,0 +1,9 @@
+# allowTLS preferTLS requireTLS
+docker run -p 27017:27017 --rm -v "$(pwd)/tls:/data/db" mongo --tlsMode requireTLS --tlsCertificateKeyFile /data/db/cert.pem --tlsCertificateKeyFilePassword 1234 --tlsCAFile /data/db/ca.pem --dbpath /tmp --tlsAllowInvalidHostnames
+
+docker run -p 27017:27017 --rm -v "$(pwd)/tls:/data/db" mongo --tlsMode preferTLS --tlsCertificateKeyFile /data/db/cert.pem --tlsCAFile /data/db/ca.pem --dbpath /tmp --tlsAllowInvalidHostnames --clusterAuthMode x509
+docker run -p 27017:27017 --rm -v "$(pwd)/tls:/data/db" mongo
+
+mongosh --tls --tlsCertificateKeyFile "$(pwd)/tls/cert.pem" --tlsCAFile "$(pwd)/tls/ca.pem" --host localhost --tlsAllowInvalidCertificates
+
+mongosh --tls --tlsCAFile "$(pwd)/tls/ca.pem" --host localhost --tlsAllowInvalidCertificates
