@@ -27,7 +27,7 @@ async function init() {
   log("hostIpAndPort " + hostIpAndPort)
 
 
-  if(config.tls_cafile && config.tls_ca_cert && config.tls_ca_private) {
+  if (config.tls_cafile && config.tls_ca_cert && config.tls_ca_private) {
     var dir = require('path').dirname(config.tls_cafile)
     if (!fs.existsSync(dir)) {
       log("create path " + dir)
@@ -42,7 +42,7 @@ async function init() {
     fs.writeFileSync(capath, t, { encoding: "utf-8" });
     const pri = Buffer.from(config.tls_ca_private, 'base64')
     var t = pri.toString()
-    fs.writeFileSync(privatepath, t, { encoding: "utf-8" });  
+    fs.writeFileSync(privatepath, t, { encoding: "utf-8" });
   }
 
   if (config.tls_selfsign) {
@@ -320,21 +320,35 @@ async function AddUser(authdb, database, username, password, dbrole) {
   var db = cli.db(authdb);
   // log("check if " + username + " has " + dbrole + " role for " + database + " in " + authdb);
   var exists = await db.admin().command({ usersInfo: { user: username, db: authdb } }, {});
+
+  if(dbrole.indexOf(",") > -1) dbrole = dbrole.split(",");
+  if (!Array.isArray(dbrole)) dbrole = [dbrole];
+  const roles = [];
+
   if (!exists.users || exists.users.length == 0) {
+    for (let i = 0; i < dbrole.length; i++) {
+      roles.push({ role: dbrole[i], db: database });
+    }
     log(username + " is missing from " + authdb + " so adding with " + dbrole + " to " + database)
     await db.addUser(username, password,
       {
-        roles: [{ role: dbrole, db: database }]
+        roles: roles
       })
   } else {
-    var found = false;
-    for (var i = 0; i < exists.users[0].roles.length; i++) {
-      if (exists.users[0].roles[i].db == database && exists.users[0].roles[i].role == dbrole) {
-        found = true;
+    for (let x = 0; x < dbrole.length; x++) {
+      let found = false
+      for (var i = 0; i < exists.users[0].roles.length; i++) {
+        if (exists.users[0].roles[i].db == database && exists.users[0].roles[i].role == dbrole[x]) {
+          found = true;
+        }
+      }
+      if (!found) {
+        log(username + " is missing role " + dbrole[x] + " on " + database )
+        roles.push({ role: dbrole[x], db: database });
       }
     }
-    if (!found) {
-      await db.command({ grantRolesToUser: username, roles: [{ role: dbrole, db: database }] });
+    if (roles.length > 0) {
+      await db.command({ grantRolesToUser: username, roles: roles });
     }
   }
 }
@@ -463,7 +477,7 @@ async function primaryWork(pods, status, shouldForce) {
   var addrToAdd = await addrToAddLoop(pods, status.members, addrToRemove);
 
   if (addrToAdd.length || addrToRemove.length) {
-    if(errorcounter > 3) {
+    if (errorcounter > 3) {
       log("Had more than 3 errors, so we will try forcing reconfig");
       shouldForce = true;
     }
@@ -901,9 +915,9 @@ const doGenerateCertificate = (path, cipher, passphrase) => {
   var Keys = { privateKey: null, publicKey: null }
 
   // if (fs.existsSync(privatepath) && fs.existsSync(publicpath)) {
-  if (fs.existsSync(privatepath) ) {
+  if (fs.existsSync(privatepath)) {
     Keys.privateKey = fs.readFileSync(privatepath, { encoding: "utf-8" });
-    if(fs.existsSync(publicpath)) {
+    if (fs.existsSync(publicpath)) {
       Keys.publicKey = fs.readFileSync(publicpath, { encoding: "utf-8" });
     }
   } else {
@@ -1082,12 +1096,12 @@ const verifiyCSR = (isca, csrPem, path, passphrase, years) => {
   // issuer from CA
   cert.setIssuer(caCert.subject.attributes);
 
-  if(isca) {
+  if (isca) {
     cert.setExtensions([
       {
         name: "basicConstraints",
         CA: true,
-      }]); 
+      }]);
   } else {
     cert.setExtensions([
       {

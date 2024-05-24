@@ -14,7 +14,7 @@ COPY .foreverignore /opt/openiap/.foreverignore
 
 CMD ["npm", "start"]
 
-# docker build . -t openiap/mongo-k8s-sidecar:0.2.2 && docker push openiap/mongo-k8s-sidecar:0.2.2
+# docker build . -t openiap/mongo-k8s-sidecar:0.2.7 && docker push openiap/mongo-k8s-sidecar:0.2.7
 # docker build . -t openiap/mongo-k8s-sidecar && docker push openiap/mongo-k8s-sidecar
 
 

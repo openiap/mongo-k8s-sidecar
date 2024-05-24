@@ -1,6 +1,6 @@
 {
   "name": "@openiap/mongo-k8s-sidecar",
-  "version": "0.2.4",
+  "version": "0.2.7",
   "description": "Kubernetes sidecar for mongodb",
   "main": "src/index.js",
   "scripts": {
